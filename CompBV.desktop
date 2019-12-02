@@ -1,0 +1,20 @@
+[Desktop Entry]
+Categories=GNOME;GTK;Utility;
+Comment[pt_BR]=Verifique se seus backups estão em dia
+Comment=Verifique se seus backups estão em dia
+Exec=python3 /usr/share/CompBV/main.py
+GenericName[pt_BR]=
+GenericName=
+Icon=/usr/share/CompBV/images/icon.png
+MimeType=
+Name[pt_BR]=CompBV
+Name=CompBV
+Path=/usr/share/CompBV
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
