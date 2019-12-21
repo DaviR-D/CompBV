@@ -1,42 +1,74 @@
+from threading import Thread
+import time
 import os.path
 import glob
 import os
 
-result_list_cache = []
-folder_list_cache = []
+resultListCache = []
+folderListCache = []
 
-def compFolders(f1,f2):
-    global result_list_cache
-    global folder_list_cache
-    result_list_cache = []
-    folder_list_cache = []
-    #Efetivando a checagem dos
-    compFiles(f1,f2) #arquivos de
-    compFiles(f2,f1) #ambas as pastas
-    return result_list_cache, folder_list_cache
+# Função que chama as outras e inicia as threads
+def folderManager(folder1,folder2):
+    global resultListCache
+    global folderListCache
 
+    fileList1, fileList2, path1, path2 = loadFiles(folder1, folder2)
+    comp1 = Thread(target = compFiles, args = (fileList1,fileList2, path1, folder2))
+    comp2 = Thread(target = compFiles, args = (fileList2,fileList1, path2, folder1))
 
-def compFiles(f1,f2):
-    global result_list_cache
-    global folder_list_cache
-    x = True #Variável de controle
-    for f in glob.glob(f1 + '/*'): #Um arquivos da primeira pasta
-        for a in glob.glob(f2 + '/*'): #É comparado com todos da segunda
-            if dirComp(f,a): continue #Caso retorne verdadeiro passamos para o próximo loop
-            if os.path.getsize(f) == os.path.getsize(a) and not os.path.isdir(f): #Se os dois arquivos forem iguais
-                x = False #(mesmo tamanho em bytes), x se torna falso
-            if not x: break #e o segundo loop é parado, passando para o próximo arquivo a ser testado
-        if x and not os.path.isdir(f): #Se não foi encontrado nenhum arquivo
-            print(f) #igual a "f" na segunda pasta e "f" não for diretório
-            result_list_cache += [f] #Adiciona o endereço de "f" na lista de arquivos a serem copiados
-            folder_list_cache += [f2] #Identifica a pasta para qual o arquivo deve ir
-        x = True #x volta a ser verdadeiro
+    comp1.start()
+    comp2.start()
 
-def dirComp(f,a): #Verifica se um dos endereços não é uma pasta
-    if os.path.isdir(f) and os.path.isdir(a) and os.path.basename(f) == os.path.basename(a): #Se os dois endereços
-        compFiles(f,a) #forem subpastas de mesmo nome, compara as diferenças dos dois
-        return True # retorna verdadeiro
-    elif os.path.isdir(f) or os.path.isdir(a): #se só um deles dor pasta ou não tiverem
-        return True #nomes iguais, apenas retorna verdadeiro
-    else: #caso contrário, apenas retorna
-        return
+    comp1.join()
+    comp2.join()
+
+    return resultListCache, folderListCache
+
+# Copara as duas pastas e armazena a diferença entre elas
+def compFiles(fileList1, fileList2, path1, path2):
+    global resultListCache
+    global folderListCache
+    x = True
+    for f, path in zip(fileList1, path1):
+        for a in (fileList2):
+            if f == a:
+                x = False
+            if not x: break
+        if x:
+            print(path)
+            resultListCache += [path]
+            folderListCache += [path2]
+        x = True
+
+# Armazena o tamanho dos arquivos em bytes em listas para que as pastas possam ser comparadas simultâneamente
+def loadFiles(folder1, folder2):
+    sizesList1 = []
+    sizesList2 = []
+    path1 = []
+    path2 = []
+    dirList1 = []
+    dirList2 = []
+
+    for f in glob.glob(folder1 + '/*'):
+        if not os.path.isdir(f):
+            sizesList1 = sizesList1 + [os.path.getsize(f)]
+            path1 = path1 + [f]
+        else:
+            dirList1 = dirList1 + [f]
+
+    for f in glob.glob(folder2 + '/*'):
+        if not os.path.isdir(f):
+            sizesList2 = sizesList2 + [os.path.getsize(f)]
+            path2 = path2 + [f]
+        else:
+            dirList2 = dirList2 + [f]
+
+    dirList1.sort()
+    dirList2.sort()
+
+# Verifica se as subpastas são de mesmo nome e se sim, as envia para a função principal para serem comparadas também
+    for l1, l2 in zip(dirList1, dirList2):
+        if os.path.basename(l1) == os.path.basename(l2):
+            folderManager(l1, l2)
+
+    return sizesList1, sizesList2, path1, path2

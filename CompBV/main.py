@@ -1,14 +1,15 @@
+from threading import Thread
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-from resultHandler import dif_handler
+from resultHandler import difHandler
 from compare import comp
 
 
-result_list_cache = []
-folder_list_cache = []
-user_option_copy = False
-user_option_delete = False
+resultListCache = []
+folderListCache = []
+userOptionCopy = False
+userOptionDelete = False
 
 
 class Comp(Gtk.Window):
@@ -16,125 +17,126 @@ class Comp(Gtk.Window):
         builder = Gtk.Builder()
         builder.add_from_file("interface/comp.glade")
         builder.add_from_file("interface/window2.glade")
-        self.main_window = builder.get_object("window1")
-        self.result_window = builder.get_object("window2")
-        self.result_text = builder.get_object("text")
-        self.main_window.set_title("Backup Verificator")
-        self.main_button = builder.get_object("bt1")
-        self.copy_button = builder.get_object("copy_button")
-        self.delete_button = builder.get_object("delete_button")
+        self.mainWindow = builder.get_object("window1")
+        self.resultWindow = builder.get_object("window2")
+        self.resultText = builder.get_object("text")
+        self.mainWindow.set_title("Backup Verificator")
+        self.mainButton = builder.get_object("bt1")
+        self.copyButton = builder.get_object("copyButton")
+        self.deleteButton = builder.get_object("deleteButton")
         self.select1 = builder.get_object("select1")
         self.select2 = builder.get_object("select2")
-        self.confirm_dialog = builder.get_object("dialog")
-        self.main_window.connect("delete-event", Gtk.main_quit)
-        self.textbuffer = self.result_text.get_buffer()
+        self.confirmDialog = builder.get_object("dialog")
+        self.mainWindow.connect("delete-event", Gtk.main_quit)
+        self.textbuffer = self.resultText.get_buffer()
         builder.connect_signals(self)
-        self.result_list = ""
-        self.cont_results = 0
+        self.resultList = ""
+        self.contResults = 0
 
     # Método usado para armazenar os resultados e mostrá-los
-    def add_results(self, results):
+    def addResults(self, results):
         for file in results:
-            self.result_list = self.result_list + file + '\n'
-            self.cont_results = self.cont_results + 1
+            self.resultList = self.resultList + file + '\n'
+            self.contResults = self.contResults + 1
 
-        self.textbuffer = self.result_text.get_buffer()
-        self.textbuffer.set_text(self.result_list)
+        self.textbuffer = self.resultText.get_buffer()
+        self.textbuffer.set_text(self.resultList)
 
-    def on_main_button_clicked(self, widget):
-        global result_list_cache
-        global folder_list_cache
-        global user_option_copy
-        global user_option_delete
+    def onMainButtonClicked(self, widget):
+        global resultListCache
+        global folderListCache
+        global userOptionCopy
+        global userOptionDelete
 
-        self.var_reset()
-        self.result_window_reset()
+        self.varReset()
+        self.resultWindowReset()
 
         f1 = self.select1.get_filename()
         f2 = self.select2.get_filename()
-        result_list_cache, folder_list_cache = comp.compFolders(f1, f2)
-        self.add_results(result_list_cache)
+        
+        resultListCache, folderListCache = comp.folderManager(f1, f2)
+        self.addResults(resultListCache)
 
-    def on_copy_button_clicked(self, widget):
-        global result_list_cache
-        global folder_list_cache
-        global user_option_copy
-        global user_option_delete
+    def onCopyButtonClicked(self, widget):
+        global resultListCache
+        global folderListCache
+        global userOptionCopy
+        global userOptionDelete
 
-        self.confirm_dialog.set_text("Você tem certeza que deseja COPIAR TODOS os arquivos diferentes?")
-        self.copy_button.set_label("Sim")
-        self.delete_button.set_label("Não")
+        self.confirmDialog.set_text("Você tem certeza que deseja COPIAR TODOS os arquivos diferentes?")
+        self.copyButton.set_label("Sim")
+        self.deleteButton.set_label("Não")
 
-        if user_option_copy is True:
-            dif_handler.copy(result_list_cache, folder_list_cache)
-            self.result_window.destroy()
-            self.result_window_reset()
-            result_list_cache = []
-            folder_list_cache = []
+        if userOptionCopy is True:
+            difHandler.copy(resultListCache, folderListCache)
+            self.resultWindow.destroy()
+            self.resultWindowReset()
+            resultListCache = []
+            folderListCache = []
             return
 
-        if user_option_delete is True:
-            self.result_window.destroy()
-            self.result_window_reset()
+        if userOptionDelete is True:
+            self.resultWindow.destroy()
+            self.resultWindowReset()
             return
 
-        user_option_copy = True
+        userOptionCopy = True
 
-    def on_delete_button_clicked(self, widget):
-        global result_list_cache
-        global folder_list_cache
-        global user_option_copy
-        global user_option_delete
+    def onDeleteButtonClicked(self, widget):
+        global resultListCache
+        global folderListCache
+        global userOptionCopy
+        global userOptionDelete
 
-        self.confirm_dialog.set_text("Você tem certeza que deseja DELETAR TODOS os arquivos diferentes?")
-        self.copy_button.set_label("Não")
-        self.delete_button.set_label("Sim")
+        self.confirmDialog.set_text("Você tem certeza que deseja DELETAR TODOS os arquivos diferentes?")
+        self.copyButton.set_label("Não")
+        self.deleteButton.set_label("Sim")
 
-        if user_option_delete is True:
-            dif_handler.delete(result_list_cache)
-            self.result_window.destroy()
-            self.result_window_reset()
-            result_list_cache = []
-            folder_list_cache = []
+        if userOptionDelete is True:
+            difHandler.delete(resultListCache)
+            self.resultWindow.destroy()
+            self.resultWindowReset()
+            resultListCache = []
+            folderListCache = []
             return
 
-        if user_option_copy is True:
-            self.result_window.destroy()
-            self.result_window_reset()
+        if userOptionCopy is True:
+            self.resultWindow.destroy()
+            self.resultWindowReset()
             return
 
-        user_option_delete = True
+        userOptionDelete = True
 
     # Zera as variáveis
-    def var_reset(self):
-        global result_list_cache
-        global folder_list_cache
+    def varReset(self):
+        global resultListCache
+        global folderListCache
 
-        result_list_cache = []
-        folder_list_cache = []
-        self.textbuffer = self.result_text.get_buffer()
+        resultListCache = []
+        folderListCache = []
+        self.textbuffer = self.resultText.get_buffer()
         self.textbuffer.set_text("")
-        self.result_list = ""
-        self.cont_results = 0
+        self.resultList = ""
+        self.contResults = 0
 
     # Redeclara os objetos da segunda janela
-    def result_window_reset(self):
-        global user_option_copy
-        global user_option_delete
+    def resultWindowReset(self):
+        global userOptionCopy
+        global userOptionDelete
 
         builder = Gtk.Builder()
         builder.add_from_file("interface/window2.glade")
-        self.result_window = builder.get_object("window2")
-        self.result_text = builder.get_object("text")
-        self.copy_button = builder.get_object("copy_button")
-        self.delete_button = builder.get_object("delete_button")
-        self.confirm_dialog = builder.get_object("dialog")
-        user_option_copy = False
-        user_option_delete = False
+        self.resultWindow = builder.get_object("window2")
+        self.resultText = builder.get_object("text")
+        self.copyButton = builder.get_object("copyButton")
+        self.deleteButton = builder.get_object("deleteButton")
+        self.confirmDialog = builder.get_object("dialog")
+        userOptionCopy = False
+        userOptionDelete = False
         builder.connect_signals(self)
-        self.result_window.show_all()
+        self.resultWindow.show_all()
 
 
 win = Comp()
-win.main_window.show()
+win.mainWindow.show()
 Gtk.main()

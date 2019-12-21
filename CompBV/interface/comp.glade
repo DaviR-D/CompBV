@@ -89,7 +89,7 @@
             <property name="margin_left">10</property>
             <property name="margin_right">10</property>
             <property name="margin_top">70</property>
-            <signal name="clicked" handler="on_main_button_clicked" swapped="no"/>
+            <signal name="clicked" handler="onMainButtonClicked" swapped="no"/>
           </object>
           <packing>
             <property name="expand">True</property>
