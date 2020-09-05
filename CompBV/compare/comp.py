@@ -1,5 +1,4 @@
 from threading import Thread
-import time
 import os.path
 import glob
 import os
@@ -8,13 +7,13 @@ resultListCache = []
 folderListCache = []
 
 # Função que chama as outras e inicia as threads
-def folderManager(folder1,folder2):
+def folderManager(folder1, folder2):
     global resultListCache
     global folderListCache
 
     fileList1, fileList2, path1, path2 = loadFiles(folder1, folder2)
-    comp1 = Thread(target = compFiles, args = (fileList1,fileList2, path1, folder2))
-    comp2 = Thread(target = compFiles, args = (fileList2,fileList1, path2, folder1))
+    comp1 = Thread(target = compFiles, args = (fileList1, fileList2, path1, folder2))
+    comp2 = Thread(target = compFiles, args = (fileList2, fileList1, path2, folder1))
 
     comp1.start()
     comp2.start()

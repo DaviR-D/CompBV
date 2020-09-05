@@ -49,7 +49,7 @@
             <property name="resize_mode">immediate</property>
             <property name="column_homogeneous">True</property>
             <child>
-              <object class="GtkButton" id="delete_button">
+              <object class="GtkButton" id="deleteButton">
                 <property name="label" translatable="yes">Apagar</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -62,7 +62,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="copy_button">
+              <object class="GtkButton" id="copyButton">
                 <property name="label" translatable="yes">Copiar</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
