@@ -71,8 +71,9 @@ def loadFiles(folder1, folder2):
     dirList2.sort()
 
 # Verifica se as subpastas são de mesmo nome e se sim, as envia para a função principal para serem comparadas também
-    for l1, l2 in zip(dirList1, dirList2):
-        if os.path.basename(l1) == os.path.basename(l2):
-            folderManager(l1, l2)
+    for l1 in dirList1:
+        for l2 in dirList2:
+            if os.path.basename(l1) == os.path.basename(l2):
+                folderManager(l1, l2)
 
     return sizesList1, sizesList2, path1, path2
