@@ -53,8 +53,8 @@ class Comp(Gtk.Window):
 
         f1 = self.select1.get_filename()
         f2 = self.select2.get_filename()
-        
-        resultListCache, folderListCache = comp.folderManager(f1, f2)
+
+        resultListCache, folderListCache = comp.folderManager(f1, f2, 1)
         self.addResults(resultListCache)
 
     def onCopyButtonClicked(self, widget):

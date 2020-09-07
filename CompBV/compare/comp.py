@@ -7,9 +7,14 @@ resultListCache = []
 folderListCache = []
 
 # Função que chama as outras e inicia as threads
-def folderManager(folder1, folder2):
+def folderManager(folder1, folder2, clean=0):
     global resultListCache
     global folderListCache
+
+    if (clean):
+        resultListCache = []
+        folderListCache = []
+
 
     fileList1, fileList2, path1, path2 = loadFiles(folder1, folder2)
     comp1 = Thread(target = compFiles, args = (fileList1, fileList2, path1, folder2))
