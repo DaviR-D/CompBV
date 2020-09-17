@@ -134,6 +134,7 @@ class Comp(Gtk.Window):
         userOptionCopy = False
         userOptionDelete = False
         builder.connect_signals(self)
+        self.resultWindow.set_default_size(700,300)
         self.resultWindow.show_all()
 
 
