@@ -6,8 +6,8 @@ from resultHandler import difHandler
 from compare import comp
 
 
-resultListCache = []
-folderListCache = []
+resultListCache = list()
+folderListCache = list()
 userOptionCopy = False
 userOptionDelete = False
 
@@ -16,31 +16,21 @@ class Comp(Gtk.Window):
     def __init__(self):
         builder = Gtk.Builder()
         builder.add_from_file("interface/comp.glade")
-        builder.add_from_file("interface/window2.glade")
         self.mainWindow = builder.get_object("window1")
-        self.resultWindow = builder.get_object("window2")
-        self.resultText = builder.get_object("text")
-        self.mainWindow.set_title("Backup Verificator")
+        self.mainWindow.set_title("CompBV")
         self.mainButton = builder.get_object("bt1")
-        self.copyButton = builder.get_object("copyButton")
-        self.deleteButton = builder.get_object("deleteButton")
         self.select1 = builder.get_object("select1")
         self.select2 = builder.get_object("select2")
-        self.confirmDialog = builder.get_object("dialog")
         self.mainWindow.connect("delete-event", Gtk.main_quit)
-        self.textbuffer = self.resultText.get_buffer()
         builder.connect_signals(self)
-        self.resultList = ""
-        self.contResults = 0
 
     # Método usado para armazenar os resultados e mostrá-los
     def addResults(self, results):
         for file in results:
-            self.resultList = self.resultList + file + '\n'
-            self.contResults = self.contResults + 1
+            self.resultList += file + '\n'
+            self.contResults += 1
 
-        self.textbuffer = self.resultText.get_buffer()
-        self.textbuffer.set_text(self.resultList)
+        self.resultText.get_buffer().set_text(self.resultList)
 
     def onMainButtonClicked(self, widget):
         global resultListCache
@@ -48,14 +38,15 @@ class Comp(Gtk.Window):
         global userOptionCopy
         global userOptionDelete
 
-        self.varReset()
         self.resultWindowReset()
+        self.varReset()
 
         f1 = self.select1.get_filename()
         f2 = self.select2.get_filename()
 
         resultListCache, folderListCache = comp.folderManager(f1, f2, 1)
         self.addResults(resultListCache)
+        self.resultWindow.set_title("Resultados: " + str(self.contResults))
 
     def onCopyButtonClicked(self, widget):
         global resultListCache
@@ -71,8 +62,8 @@ class Comp(Gtk.Window):
             difHandler.copy(resultListCache, folderListCache)
             self.resultWindow.destroy()
             self.resultWindowReset()
-            resultListCache = []
-            folderListCache = []
+            resultListCache = list()
+            folderListCache = list()
             return
 
         if userOptionDelete is True:
@@ -96,8 +87,8 @@ class Comp(Gtk.Window):
             difHandler.delete(resultListCache)
             self.resultWindow.destroy()
             self.resultWindowReset()
-            resultListCache = []
-            folderListCache = []
+            resultListCache = list()
+            folderListCache = list()
             return
 
         if userOptionCopy is True:
@@ -112,10 +103,9 @@ class Comp(Gtk.Window):
         global resultListCache
         global folderListCache
 
-        resultListCache = []
-        folderListCache = []
-        self.textbuffer = self.resultText.get_buffer()
-        self.textbuffer.set_text("")
+        resultListCache = list()
+        folderListCache = list()
+        self.resultText.get_buffer().set_text("")
         self.resultList = ""
         self.contResults = 0
 
