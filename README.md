@@ -25,9 +25,9 @@ To install or update CompBV:
 3. **Run the Installation Script**:
     - Execute the installation script in the terminal:
         ```bash
-        ./install.sh
+        ./InstallUpgrade.sh
         ```
-    This script will install the application, use ./upgrade.sh in case it's already installed.
+    This script will install or upgrade the application.
 
 4. **Run CompBV**:
     - Once installed, you can launch CompBV from your applications menu.
