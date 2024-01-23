@@ -3,8 +3,8 @@ import os.path
 import glob
 import os
 
-resultListCache = []
-folderListCache = []
+resultListCache = list()
+folderListCache = list()
 
 # Função que chama as outras e inicia as threads
 def folderManager(folder1, folder2, clean=0):
@@ -12,8 +12,8 @@ def folderManager(folder1, folder2, clean=0):
     global folderListCache
 
     if (clean):
-        resultListCache = []
-        folderListCache = []
+        resultListCache = list()
+        folderListCache = list()
 
 
     fileList1, path1, dirList1 = loadFiles(folder1)
@@ -44,23 +44,23 @@ def compFiles(fileList1, fileList2, path1, path2):
             if not x: break
         if x:
             print(path)
-            resultListCache += [path]
-            folderListCache += [path2]
+            resultListCache.append(path)
+            folderListCache.append(path2)
         x = True
 
 # Armazena o tamanho dos arquivos em bytes em listas para que as pastas possam ser comparadas simultâneamente
 def loadFiles(folder):
-    sizesList = []
-    path = []
-    dirList = []
+    sizesList = list()
+    path = list()
+    dirList = list()
 
 
     for f in glob.glob(folder + '/*'):
         if not os.path.isdir(f):
-            sizesList = sizesList + [os.path.getsize(f)]
-            path = path + [f]
+            sizesList.append(os.path.getsize(f))
+            path.append(f)
         else:
-            dirList = dirList + [f]
+            dirList.append(f)
 
     dirList.sort()
 
