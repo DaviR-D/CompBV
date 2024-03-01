@@ -5,3 +5,5 @@ cp -r CompBV $HOME/.local/share/ && cp CompBV.desktop $HOME/.local/share/applica
 
 echo Path=$HOME/.local/share/CompBV >> $HOME/.local/share/applications/CompBV.desktop
 
+echo Icon=$HOME/.local/share/CompBV/images/icon.png >> $HOME/.local/share/applications/CompBV.desktop
+

@@ -5,7 +5,6 @@ Comment=Verifique se seus backups estão em dia
 Exec=python3 main.py
 GenericName[pt_BR]=
 GenericName=
-Icon=images/icon.png
 MimeType=
 Name[pt_BR]=CompBV
 Name=CompBV
